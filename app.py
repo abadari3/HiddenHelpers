@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+from address import Address
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
@@ -29,7 +29,11 @@ def index():
 
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
-        return render_template('index.html', tasks=tasks)
+        addresses = [Address(search=task.content) for task in tasks]
+        for addr in addresses:
+            addr.populate(0)
+        ta = zip(tasks, addresses)
+        return render_template('index.html', ta=ta, tasks=tasks)
 
 @app.route('/delete/<int:id>')
 def delete(id):
