@@ -25,7 +25,7 @@ def index():
             db.session.commit()
             return redirect('/')
         except:
-            return "Error"
+            return "error"
 
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
